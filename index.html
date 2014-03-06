@@ -62,7 +62,27 @@
 		<script type="text/javascript" language="javascript">
 
 			var gifs = [];
-			var	seenGifs = [];
+			var	index = 0;
+
+			// http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+			function shuffle(array) {
+				var currentIndex = array.length, temporaryValue, randomIndex;
+
+				// While there remain elements to shuffle...
+				while (0 !== currentIndex) {
+
+					// Pick a remaining element...
+					randomIndex = Math.floor(Math.random() * currentIndex);
+					currentIndex -= 1;
+
+					// And swap it with the current element.
+					temporaryValue = array[currentIndex];
+					array[currentIndex] = array[randomIndex];
+					array[randomIndex] = temporaryValue;
+				}
+
+				return array;
+			}
 
 			function fetchGifs() {
 				var oRequest = new XMLHttpRequest();
@@ -73,24 +93,30 @@
 				if (oRequest.status==200) {
 					var response = oRequest.responseText;
 					var parsed = eval("(function(){return " + response + ";})()");
-					return parsed.gifs;
+					return shuffle(parsed.gifs);
 				} else alert("Error executing XMLHttpRequest call!");
 			}
 
 			function getGif() {
-				var index=Math.floor(Math.random()*(gifs.length-1));
-				return gifs[index];
+				//index=Math.floor(Math.random()*(gifs.length-1));
+				if (index == gifs.length) {
+					gifs = fetchGifs();
+					index = 0;
+				}
+				return gifs[index++];
 			}
 
 			function getImageUrl(img) {
 				setTimeout(function() {
 					img.src = getGif();
-				},2000);
+					var i = new Image();
+					i.src = gifs[index];
+				},3000);
 			}
 
 			window.onload=function(){
-				gifs = fetchGifs();
-			}
+					gifs = fetchGifs();
+				};
 		</script>
 		<title>ALL the gifs!</title>
 	</head>
