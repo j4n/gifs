@@ -19,11 +19,34 @@
 			}
 		</style>
 
+		<script type="text/javascript" language="javascript">
+			function getGif() {
+				var oRequest = new XMLHttpRequest();
+				var sURL = "gifs.json";
+				oRequest.open("GET",sURL,false);
+				oRequest.send(null)
+
+				if (oRequest.status==200) {
+					var response = oRequest.responseText;
+					var parsed = eval("(function(){return " + response + ";})()");
+					var index=Math.floor(Math.random()*(parsed.gifs.length-1));
+					return parsed.gifs[index];
+					//alert(parsed.gifs[index]);
+				} else alert("Error executing XMLHttpRequest call!");
+			}
+			
+			function getImageUrl(img) {
+		  	 var imageSrc = getGif();
+		 	  if(img.src != imageSrc) { // don't get stuck in an endless loop
+			  img.src = imageSrc;
+			   }
+			}
+		</script>
 		<title>ALL the gifs!</title>
 	</head>
 	<body>
 		<div id='myDiv'>
-			<img src='tgif.gif' id='cropcontainer'/>
+		<img src="tgif.gif" id='cropcontainer' onload="getImageUrl(this)" />
 		</div>
 	</body>
 </html>
