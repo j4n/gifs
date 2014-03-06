@@ -60,7 +60,11 @@
 		</style>
 
 		<script type="text/javascript" language="javascript">
-			function getGif() {
+
+			var gifs = [];
+			var	seenGifs = [];
+
+			function fetchGifs() {
 				var oRequest = new XMLHttpRequest();
 				var sURL = "gifs.json";
 				oRequest.open("GET",sURL,false);
@@ -69,17 +73,23 @@
 				if (oRequest.status==200) {
 					var response = oRequest.responseText;
 					var parsed = eval("(function(){return " + response + ";})()");
-					var index=Math.floor(Math.random()*(parsed.gifs.length-1));
-					return parsed.gifs[index];
-					//alert(parsed.gifs[index]);
+					return parsed.gifs;
 				} else alert("Error executing XMLHttpRequest call!");
 			}
-			
+
+			function getGif() {
+				var index=Math.floor(Math.random()*(gifs.length-1));
+				return gifs[index];
+			}
 
 			function getImageUrl(img) {
 				setTimeout(function() {
 					img.src = getGif();
 				},2000);
+			}
+
+			window.onload=function(){
+				gifs = fetchGifs();
 			}
 		</script>
 		<title>ALL the gifs!</title>
